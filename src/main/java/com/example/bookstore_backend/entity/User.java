@@ -38,10 +38,10 @@ public class User {
     @Column(name = "address", nullable = true, length = 255)
     private String address;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Order> orders = new LinkedHashSet<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart = new Cart();
 
     public int getUserID() {

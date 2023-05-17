@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "`orders`")
+@Table(name = "orders")
 @JsonIgnoreProperties(value = {"user"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
 property = "orderID")
@@ -20,7 +20,6 @@ public class Order {
     @Id
     @Column(name = "orderID", nullable = false)
     private int orderID;
-    @Basic
     @Column(name = "orderDate", nullable = false)
     private Date orderDate;
 
@@ -28,7 +27,7 @@ public class Order {
     @JoinColumn(name = "userID")
     private User user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<OrderItem> orderItems = new LinkedHashSet<>();
 
     public int getOrderID() {
@@ -39,13 +38,13 @@ public class Order {
         this.orderID = orderID;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
+//    public Date getOrderDate() {
+//        return orderDate;
+//    }
+//
+//    public void setOrderDate(Date orderDate) {
+//        this.orderDate = orderDate;
+//    }
 
     public User getUser() {
         return user;

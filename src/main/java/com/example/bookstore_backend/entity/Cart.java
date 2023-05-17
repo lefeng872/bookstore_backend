@@ -24,7 +24,7 @@ public class Cart {
     @JoinColumn(name = "userID")
     private User user;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new LinkedHashSet<>();
 
     public User getUser() {
@@ -38,7 +38,6 @@ public class Cart {
     public int getCartID() {
         return cartID;
     }
-
 
     public void setCartID(int cartID) {
         this.cartID = cartID;

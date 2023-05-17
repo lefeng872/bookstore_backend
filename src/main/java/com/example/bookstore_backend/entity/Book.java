@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "book", schema = "bookstore")
+@Table(name = "book")
 @JsonIgnoreProperties(value = "handler")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
  property = "id")
