@@ -1,9 +1,9 @@
 package com.example.bookstore_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -12,37 +12,31 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-property = "userID")
+        property = "userID")
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "userID", nullable = false)
+    @Column(name = "userID")
     private int userID;
     @Basic
     @Column(name = "username", nullable = true, length = 255)
     private String username;
-
     @Basic
-    @Column(name = "password", nullable = false)
-    private String password;
-    @Basic
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = true)
     private int type;
     @Basic
-    @Column(name = "nickname", nullable = false, length = 255)
-    private String nickname;
-    @Basic
-    @Column(name = "tel", nullable = true, length = 255)
-    private String tel;
-    @Basic
-    @Column(name = "address", nullable = true, length = 255)
-    private String address;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Order> orders = new LinkedHashSet<>();
-
+    @Column(name = "email", nullable = true)
+    private String email;
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Cart cart = new Cart();
+    private UserAuth userAuth;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Order> orders;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
+    public User() {
+    }
 
     public int getUserID() {
         return userID;
@@ -60,44 +54,28 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public int getType() {
         return type;
     }
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserAuth getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(UserAuth userAuth) {
+        this.userAuth = userAuth;
     }
 
     public Set<Order> getOrders() {

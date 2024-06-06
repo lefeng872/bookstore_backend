@@ -11,19 +11,17 @@ import java.util.Set;
 
 @Entity
 @Table(name = "cart")
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler","user"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-property = "cartID")
-@JsonIgnoreProperties(value = {"user"})
+        property = "cartID")
 public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "cartID", nullable = false)
     private int cartID;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID")
     private User user;
-
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new LinkedHashSet<>();
 

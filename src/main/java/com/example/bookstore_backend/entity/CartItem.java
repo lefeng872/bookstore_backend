@@ -1,9 +1,11 @@
 package com.example.bookstore_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "cartItem")
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler", "cart"})
 public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

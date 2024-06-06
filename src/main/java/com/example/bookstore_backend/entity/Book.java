@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "book")
-@JsonIgnoreProperties(value = "handler")
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
  property = "id")
 public class Book {

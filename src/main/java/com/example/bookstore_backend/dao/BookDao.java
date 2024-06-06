@@ -7,7 +7,12 @@ import java.util.List;
 public interface BookDao {
     List<Book> getBooks();
     Book findBookByISBN(String isbn);
-    Integer deleteBookByISBN(String isbn);
-    Integer updateBook(Book book);
-    Integer addBook(Book book);
+    Book findBookByName(String name);
+    List<Book> searchBook(String keyword);
+
+    void updateBook(Integer id, String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);
+
+    void deleteBook(Integer id);
+
+    Book addBook(String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);
 }

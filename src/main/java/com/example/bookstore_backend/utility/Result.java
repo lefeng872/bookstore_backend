@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Result<T>{
-    private String msg;
-    private int code;
+    private String msg; // 错误信息
+    private int code; // status code
     private T detail;
 
 
