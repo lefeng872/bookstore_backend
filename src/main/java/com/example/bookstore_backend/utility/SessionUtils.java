@@ -1,29 +1,29 @@
 package com.example.bookstore_backend.utility;
 
-import com.example.bookstore_backend.entity.UserAuth;
+import com.example.bookstore_backend.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 public class SessionUtils {
-    public static void setSession(Integer userID) {
+    public static void setSession(User user) {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes != null) {
             HttpServletRequest request = servletRequestAttributes.getRequest();
             HttpSession session = request.getSession();
-            session.setAttribute("userID", userID);
+            System.out.println("Session created with ID: " + session.getId());
+        } else {
+            System.out.println("Failed to get ServletRequestAttributes");
         }
     }
-
-    public static void removeSession(Integer userID) {
+    public static void removeSession() {
         HttpSession session = getSession();
         if (session != null) {
             session.invalidate();
         }
     }
-
-    public static HttpSession getSession() {
+    private static HttpSession getSession() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             HttpServletRequest request = requestAttributes.getRequest();

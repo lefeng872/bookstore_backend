@@ -1,6 +1,7 @@
 package com.example.bookstore_backend.serviceimpl;
 import com.example.bookstore_backend.dao.BookDao;
 import com.example.bookstore_backend.dao.CartDao;
+import com.example.bookstore_backend.dao.OrderDao;
 import com.example.bookstore_backend.dao.UserDao;
 import com.example.bookstore_backend.entity.*;
 import com.example.bookstore_backend.service.UserService;
@@ -22,6 +23,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private CartDao cartDao;
+    @Autowired
+    private OrderDao orderDao;
     @Autowired
     private BookDao bookDao;
     private Result<User> userResult = new Result<>();
@@ -144,29 +147,25 @@ public class UserServiceImpl implements UserService {
         selfLookup.setTotalMoney(BigDecimal.valueOf(0));
         List<SelfLookup.Tuple> bookInfo = new ArrayList<>();
 
-        User user = userDao.findUserByUserID(userID);
-        Set<Order> orderSet = user.getOrders();
-        for (Order order: orderSet) {
-            Timestamp orderTimestamp = order.getTimestamp();
-            if (orderTimestamp.after(start) && orderTimestamp.before(end)) {
-                Set<OrderItem> orderItemSet = order.getOrderItems();
-                selfLookup.setTotalMoney(selfLookup.getTotalMoney().add(order.total()));
-                for (OrderItem item: orderItemSet) {
-                    selfLookup.setTotalNum(selfLookup.getTotalNum() + item.getBookAmount());
-                    Boolean find = false;
-                    for (SelfLookup.Tuple tuple: bookInfo) {
-                        if (tuple.getIsbn() == item.getIsbn()) {
-                            tuple.setNum(tuple.getNum() + item.getBookAmount());
-                            find = true;
-                        }
+        List<Order> orderList = orderDao.getUserOrdersWithTime(userID, start, end);
+        for (Order order: orderList) {
+            Set<OrderItem> orderItemSet = order.getOrderItems();
+            selfLookup.setTotalMoney(selfLookup.getTotalMoney().add(order.total()));
+            for (OrderItem item: orderItemSet) {
+                selfLookup.setTotalNum(selfLookup.getTotalNum() + item.getBookAmount());
+                Boolean find = false;
+                for (SelfLookup.Tuple tuple: bookInfo) {
+                    if (tuple.getIsbn() == item.getIsbn()) {
+                        tuple.setNum(tuple.getNum() + item.getBookAmount());
+                        find = true;
                     }
-                    if (!find) {
-                        SelfLookup.Tuple tuple = selfLookup.new Tuple();
-                        tuple.setIsbn(item.getIsbn());
-                        tuple.setNum(item.getBookAmount());
-                        tuple.setBookName("unset");
-                        bookInfo.add(tuple);
-                    }
+                }
+                if (!find) {
+                    SelfLookup.Tuple tuple = selfLookup.new Tuple();
+                    tuple.setIsbn(item.getIsbn());
+                    tuple.setNum(item.getBookAmount());
+                    tuple.setBookName("unset");
+                    bookInfo.add(tuple);
                 }
             }
         }

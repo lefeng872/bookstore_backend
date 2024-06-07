@@ -43,6 +43,12 @@ public class OrderDaoImpl implements OrderDao {
         Set<Order> orders = user.getOrders();
         return new ArrayList<>(orders);
     }
+
+    @Override
+    public List<Order> getUserOrdersWithTime(Integer userID, Timestamp start, Timestamp end) {
+        return orderRepository.findOrdersByTimestampBetweenAndUserID(start, end, userID);
+    }
+
     @Override
     public Order createOrder(Integer userID) {
         Order order = new Order();

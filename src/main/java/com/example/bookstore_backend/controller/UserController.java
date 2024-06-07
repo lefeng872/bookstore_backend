@@ -10,11 +10,16 @@ import com.example.bookstore_backend.utility.Result;
 import com.example.bookstore_backend.utility.Constants;
 
 import com.example.bookstore_backend.utility.SessionUtils;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -32,20 +37,21 @@ public class UserController {
     @Autowired
     private ClockService clockService;
     @PostMapping(value = "/login")
-    public Result<User> login(@RequestBody Map<String, String> params) {
+    public Result<User> login(@RequestBody Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         Result<User> result = userService.login(params.get("username"), params.get("password"));
         if (result != null && result.getCode() == Constants.SUCCESS) {
             result.setMsg("Login time is : " + clockService.start());
-            SessionUtils.setSession(result.getDetail().getUserID());
+            SessionUtils.setSession(result.getDetail());
             return result;
         }
         return result;
     }
-    @RequestMapping(value = "/logout")
+    @PostMapping(value = "/logout")
     public Result<String> logout(@RequestBody Map<String, String> params){
+        System.out.println("in logout!!!");
         Result<String> result = new Result<>();
         result.setDetail(clockService.end());
-        SessionUtils.removeSession(Integer.valueOf(params.get("userID")));
+        SessionUtils.removeSession();
         return result;
     }
     @PostMapping(value = "/register")

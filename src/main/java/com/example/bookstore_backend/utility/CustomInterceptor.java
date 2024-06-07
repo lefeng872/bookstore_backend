@@ -15,7 +15,9 @@ public class CustomInterceptor implements HandlerInterceptor{
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("Request URL: " + request.getRequestURL());
         // todo 可以在这里进行身份验证、日志记录等操作
-        HttpSession session = SessionUtils.getSession();
+        System.out.println("Request Session ID");
+        System.out.println(request.getRequestedSessionId());
+        HttpSession session = request.getSession(false);
         if (session == null) {
             System.out.println("Request intercepted");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

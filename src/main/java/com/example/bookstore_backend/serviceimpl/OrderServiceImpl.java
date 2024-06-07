@@ -85,26 +85,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Result<List<Order>> searchOrders(Integer userID, String keyword, Timestamp start, Timestamp end) {
-        List<Order> orders = orderDao.getOrders(userID);
+        List<Order> orders = orderDao.getUserOrdersWithTime(userID, start, end);
         List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            Timestamp orderTimestamp = order.getTimestamp();
-            if (orderTimestamp.after(start) && orderTimestamp.before(end)) {
-                boolean keyword_flag = false;
-                for (OrderItem orderItem : order.getOrderItems()) {
-                    Book book = bookDao.findBookByISBN(orderItem.getIsbn());
-                    if (book == null) continue;
-                    String bookName = book.getName();
-                    if (bookName.matches(".*" + keyword + ".*")) {
-                        keyword_flag = true;
-                        break;
-                    }
+        for (Order order: orders) {
+            boolean keyword_flag = false;
+            for (OrderItem orderItem : order.getOrderItems()) {
+                Book book = bookDao.findBookByISBN(orderItem.getIsbn());
+                if (book == null) continue;
+                String bookName = book.getName();
+                if (bookName.matches(".*" + keyword + ".*")) {
+                    keyword_flag = true;
+                    break;
                 }
-                if (keyword_flag) filteredOrders.add(order);
+            }
+            if (keyword_flag) {
+                filteredOrders.add(order);
             }
         }
-
-        if (filteredOrders.isEmpty()) {
+        if (orders.isEmpty()) {
             orderListResult.setCode(Constants.FAIL);
             orderListResult.setMsg("Empty order!");
             orderListResult.setDetail(null);
