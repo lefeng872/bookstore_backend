@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -155,7 +156,7 @@ public class UserServiceImpl implements UserService {
                 selfLookup.setTotalNum(selfLookup.getTotalNum() + item.getBookAmount());
                 Boolean find = false;
                 for (SelfLookup.Tuple tuple: bookInfo) {
-                    if (tuple.getIsbn() == item.getIsbn()) {
+                    if (Objects.equals(tuple.getIsbn(), item.getIsbn())) {
                         tuple.setNum(tuple.getNum() + item.getBookAmount());
                         find = true;
                     }
