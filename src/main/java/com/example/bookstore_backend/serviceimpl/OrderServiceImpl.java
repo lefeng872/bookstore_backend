@@ -34,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
             return orderListResult;
         }
         List<Order> res = orderDao.getOrders(userID);
+        System.out.println("order total");
         if (res == null) {
             orderListResult.setCode(Constants.FAIL);
             orderListResult.setMsg("Empty order!");
@@ -62,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
                     }
                 }
                 // "Your Order Is Finished"
+                orderDao.setTotal(order.getOrderID());
             } else {
                 // "Create Order Failed"
             }

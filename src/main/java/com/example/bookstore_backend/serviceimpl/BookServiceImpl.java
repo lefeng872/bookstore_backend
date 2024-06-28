@@ -8,11 +8,13 @@ import com.example.bookstore_backend.utility.Constants;
 import com.example.bookstore_backend.utility.Result;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.scanner.Constant;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -48,6 +50,23 @@ public class BookServiceImpl implements BookService {
         }
         return listResult;
     }
+
+    @Override
+    public Result<List<Book>> getBooksPage(String keyword, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        List<Book> books = bookDao.getBooksPage(keyword, pageable);
+        if (books == null) {
+            listResult.setCode(Constants.FAIL);
+            listResult.setMsg("Empty database");
+            listResult.setDetail(null);
+        } else {
+            listResult.setCode(Constants.SUCCESS);
+            listResult.setMsg("Success to fetch");
+            listResult.setDetail(books);
+        }
+        return listResult;
+    }
+
     @Override
     public Result<Book> findBookByName(String name) {
         Book book = bookDao.findBookByName(name);

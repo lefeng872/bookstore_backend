@@ -3,14 +3,17 @@ package com.example.bookstore_backend.controller;
 import com.example.bookstore_backend.entity.Book;
 import com.example.bookstore_backend.service.BookService;
 
+import com.example.bookstore_backend.utility.Constants;
 import com.example.bookstore_backend.utility.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,17 @@ public class BookController {
     @GetMapping("/getBooks")
     public Result<List<Book>> getBooks() {
         return bookService.getBooks();
+    }
+    @GetMapping("/getBookPage")
+    public Result<List<Book>> getBookPage(@RequestParam String keyword, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+        if (pageIndex == null || pageIndex < 0 || pageSize == null || pageSize < 0) {
+            Result<List<Book>> empty = new Result<>();
+            empty.setCode(Constants.FAIL);
+            empty.setDetail(null);
+            empty.setMsg("illegal arguments");
+            return empty;
+        }
+        return bookService.getBooksPage(keyword, pageIndex, pageSize);
     }
     @GetMapping("/getBook")
     public Result<Book> getBook(String isbn){

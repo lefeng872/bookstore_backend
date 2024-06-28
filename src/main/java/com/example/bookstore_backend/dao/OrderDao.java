@@ -12,4 +12,5 @@ public interface OrderDao {
     public Order createOrder(Integer userID);
     public void addOrderItem(Book book, Integer bookAmount, Order order);
     List<Order> getAllOrders();
+    void setTotal(int orderID);
 }

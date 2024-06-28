@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
             for (Order order: orderSet) {
                 Timestamp orderTimestamp = order.getTimestamp();
                 if (orderTimestamp.after(start) && orderTimestamp.before(end)) {
-                    consumer.setTotal(consumer.getTotal().add(order.total()));
+                    consumer.setTotal(consumer.getTotal().add(order.compute_total()));
                 }
             }
             list.add(consumer);
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
         List<Order> orderList = orderDao.getUserOrdersWithTime(userID, start, end);
         for (Order order: orderList) {
             Set<OrderItem> orderItemSet = order.getOrderItems();
-            selfLookup.setTotalMoney(selfLookup.getTotalMoney().add(order.total()));
+            selfLookup.setTotalMoney(selfLookup.getTotalMoney().add(order.compute_total()));
             for (OrderItem item: orderItemSet) {
                 selfLookup.setTotalNum(selfLookup.getTotalNum() + item.getBookAmount());
                 Boolean find = false;

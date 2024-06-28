@@ -75,4 +75,12 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+    @Override
+    public void setTotal(int orderID) {
+        // todo
+        Order order = orderRepository.findOrderByOrderID(orderID);
+        order.compute_total();
+        orderRepository.save(order);
+    }
 }

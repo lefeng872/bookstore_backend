@@ -20,10 +20,12 @@ property = "orderID")
 public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "orderID", nullable = false)
+    @Column(name = "orderID", nullable = true)
     private int orderID;
-    @Column(name = "dateTime", nullable = false)
+    @Column(name = "dateTime", nullable = true)
     private Timestamp timestamp;
+    @Column(name = "total", nullable = true, precision = 2)
+    private BigDecimal total;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userID")
     private User user;
@@ -56,7 +58,15 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public BigDecimal total() {
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getTotal() {
+        return this.total;
+    }
+
+    public BigDecimal compute_total() {
         BigDecimal total = BigDecimal.valueOf(0.0);
         for (OrderItem item: orderItems) {
             System.out.println(item.getCurrentPrice().multiply(BigDecimal.valueOf(item.getBookAmount())));
@@ -66,6 +76,7 @@ public class Order {
         }
         System.out.println("total of this order");
         System.out.println(total);
+        this.total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
         return total;
     }
 }

@@ -31,7 +31,9 @@ public class OrderController {
     @PostMapping("/getOrders")
     public Result<List<Order>> getOrders(@RequestBody Map<String, Integer> params) {
         Integer userID = params.get("userID");
-        return orderService.getOrders(userID);
+        Result<List<Order>> a = orderService.getOrders(userID);
+        return a;
+//        return orderService.getOrders(userID);
     }
     @PostMapping("/searchOrders")
     public Result<List<Order>> searchOrders(@RequestBody Map<String, String> params) {

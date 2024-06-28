@@ -5,6 +5,7 @@ import com.example.bookstore_backend.entity.Book;
 import com.example.bookstore_backend.repository.BookRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,6 +19,13 @@ public class BookDaoImpl implements BookDao {
     public List<Book> getBooks() {
         return bookRepository.findAll();
     }
+
+    @Override
+    public List<Book> getBooksPage(String keyword, Pageable pageable) {
+//        return bookRepository.findAll(pageable).getContent();
+        return bookRepository.findByNameContaining(keyword, pageable).getContent();
+    }
+
     @Override
     public Book findBookByISBN(String isbn) {
         return bookRepository.findBookByIsbn(isbn);
