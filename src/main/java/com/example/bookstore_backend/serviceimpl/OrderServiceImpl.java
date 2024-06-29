@@ -9,6 +9,8 @@ import com.example.bookstore_backend.utility.Constants;
 import com.example.bookstore_backend.utility.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -191,6 +193,74 @@ public class OrderServiceImpl implements OrderService {
         result.setDetail(list);
         System.out.println(result.getDetail());
         return result;
+    }
+
+    @Override
+    public Result<List<Order>> searchOrdersWithPage(Integer userID, String keyword, Timestamp start, Timestamp end, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        List<Order> orders = orderDao.getUserOrdersWithTimeWithPage(userID, start, end, pageable);
+        List<Order> filteredOrders = new ArrayList<>();
+        for (Order order: orders) {
+            boolean keyword_flag = false;
+            for (OrderItem orderItem : order.getOrderItems()) {
+                Book book = bookDao.findBookByISBN(orderItem.getIsbn());
+                if (book == null) continue;
+                String bookName = book.getName();
+                if (bookName.matches(".*" + keyword + ".*")) {
+                    keyword_flag = true;
+                    break;
+                }
+            }
+            if (keyword_flag) {
+                filteredOrders.add(order);
+            }
+        }
+        if (orders.isEmpty()) {
+            orderListResult.setCode(Constants.FAIL);
+            orderListResult.setMsg("Empty order!");
+            orderListResult.setDetail(null);
+        } else {
+            orderListResult.setCode(Constants.SUCCESS);
+            orderListResult.setMsg("Success to get Orders");
+            orderListResult.setDetail(filteredOrders);
+        }
+        return orderListResult;
+    }
+
+    @Override
+    public Result<List<Order>> searchAllOrdersWithPage(Integer userID, String keyword, Timestamp start, Timestamp end, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        List<Order> orders = orderDao.getAllOrdersWithTimeWithPage(start, end, pageable);
+        List<Order> filteredOrders = new ArrayList<>();
+        for (Order order : orders) {
+            boolean keyword_flag = false;
+            for (OrderItem orderItem : order.getOrderItems()) {
+                Book book = bookDao.findBookByISBN(orderItem.getIsbn());
+                if (book == null) {
+                    keyword_flag = true;
+                    break;
+                }
+                String bookName = book.getName();
+                System.out.println(bookName);
+                if (bookName.matches(".*" + keyword + ".*")) {
+                    System.out.println(bookName + "matches" + keyword + "!");
+                    keyword_flag = true;
+                    break;
+                }
+            }
+            if (keyword_flag) filteredOrders.add(order);
+        }
+
+        if (filteredOrders.isEmpty()) {
+            orderListResult.setCode(Constants.FAIL);
+            orderListResult.setMsg("Empty order!");
+            orderListResult.setDetail(null);
+        } else {
+            orderListResult.setCode(Constants.SUCCESS);
+            orderListResult.setMsg("Success to get Orders");
+            orderListResult.setDetail(filteredOrders);
+        }
+        return orderListResult;
     }
 
     public static String convertMapToJson(Map<String, Integer> map) throws Exception {

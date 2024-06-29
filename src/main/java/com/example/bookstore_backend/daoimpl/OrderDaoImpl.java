@@ -12,6 +12,7 @@ import com.example.bookstore_backend.repository.OrderRepository;
 import com.example.bookstore_backend.utility.Constants;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,6 +51,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public List<Order> getUserOrdersWithTimeWithPage(Integer userID, Timestamp start, Timestamp end, Pageable pageable) {
+        return orderRepository.findOrdersByTimestampBetweenAndUserIDWithPage(start, end, userID, pageable).getContent();
+    }
+
+    @Override
     public Order createOrder(Integer userID) {
         Order order = new Order();
         User user = userDao.findUserByUserID(userID);
@@ -82,5 +88,10 @@ public class OrderDaoImpl implements OrderDao {
         Order order = orderRepository.findOrderByOrderID(orderID);
         order.compute_total();
         orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getAllOrdersWithTimeWithPage(Timestamp start, Timestamp end, Pageable pageable) {
+        return orderRepository.findAllOrdersByTimestampBetween(start, end, pageable);
     }
 }

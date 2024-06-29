@@ -17,4 +17,8 @@ public interface OrderService {
     Result<List<Order>> searchAllOrders(Integer userID, String keyword, Timestamp start, Timestamp end);
 
     Result<List<TypeCount>> typeStatistic(Timestamp start, Timestamp end);
+
+    Result<List<Order>> searchOrdersWithPage(Integer userID, String keyword, Timestamp start, Timestamp end, Integer pageIndex, Integer pageSize);
+
+    Result<List<Order>> searchAllOrdersWithPage(Integer userID, String keyword, Timestamp start, Timestamp end, Integer pageIndex, Integer pageSize);
 }
