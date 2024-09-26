@@ -34,3 +34,6 @@ build/
 /.mvn/*
 /mvnw.cmd
 /mvnw
+
+### macOS ###
+.DS_Store
