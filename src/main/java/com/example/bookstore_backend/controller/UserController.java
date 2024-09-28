@@ -30,7 +30,7 @@ import java.util.Map;
 
 @RestController
 @EnableAutoConfiguration
-@Scope(value = WebApplicationContext.SCOPE_SESSION)
+@Scope("session")
 public class UserController {
     @Autowired
     private UserService userService;

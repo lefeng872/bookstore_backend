@@ -9,13 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
-@Scope(value = WebApplicationContext.SCOPE_SESSION)
+@Scope("session")
 public class ClockServiceImpl implements ClockService {
     long loginTime = 0;
     String loginTimeStr = "";
     @Override
     public String start() {
-        // 设置判断的要确认当前的计时器未发起，避免重复发起
         if(loginTime == 0){
             this.loginTime = System.currentTimeMillis();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
