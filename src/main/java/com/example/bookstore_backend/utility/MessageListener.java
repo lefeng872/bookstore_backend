@@ -19,7 +19,7 @@ public class MessageListener {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @KafkaListener(topics = "todo", groupId = "default_group")
+    @KafkaListener(topics = "todo", groupId = "todo_group")
     public void todoListener(ConsumerRecord<String, String> record) {
         String key = record.key();
         int userID = Integer.parseInt(record.value());
@@ -31,5 +31,12 @@ public class MessageListener {
             String finishTime = simpleDateFormat.format(new Date(time));
             kafkaTemplate.send("finished", key, record.value() + "," + finishTime);
         }
+    }
+
+    @KafkaListener(topics = "finished", groupId = "finished_group")
+    public void finishedListener(ConsumerRecord<String, String> record) {
+        String createTime = record.key();
+        String[] value = record.value().split(",");
+        System.out.println("finished listener get: (createTime: " + createTime + ", finishTime: " + value[1] + ", userID: " + value[0] + ")");
     }
 }
