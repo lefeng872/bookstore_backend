@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface OrderService {
     public Result<List<Order>> getOrders(Integer userID);
-    public void makeOrder(Integer userID);
+    public boolean makeOrder(Integer userID);
     Result<List<Order>> getAllOrders();
     Result<List<Order>> searchOrders(Integer userID, String keyword, Timestamp start, Timestamp end);
     Result<List<Order>> searchAllOrders(Integer userID, String keyword, Timestamp start, Timestamp end);

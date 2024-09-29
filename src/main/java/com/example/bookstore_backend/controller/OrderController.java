@@ -182,6 +182,15 @@ public class OrderController {
         orderService.makeOrder(userID);
     }
 
+    @PostMapping("/sendOrder")
+    public void sendOrder(@RequestBody Map<String, Integer> params) throws JsonProcessingException {
+        Integer userID = params.get("userID");
+        long time = System.currentTimeMillis();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String key = simpleDateFormat.format(new Date(time));
+        kafkaTemplate.send("todo", key, String.valueOf(userID));
+    }
+
     /**
      * 获得所有用户所有订单
      * @return

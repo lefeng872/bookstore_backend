@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -50,10 +53,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void makeOrder(Integer userID) {
-        List<CartItem> cartItems = cartDao.getCartItems(userID);
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
+    public boolean makeOrder(Integer userID) {
+        List<CartItem> cartItems = new ArrayList<>(cartDao.getCartItems(userID));
         if (cartItems.isEmpty()) {
             // "Empty Cart"
+            return false;
         } else {
             Order order = orderDao.createOrder(userID);
             if (order != null) {
@@ -66,8 +71,10 @@ public class OrderServiceImpl implements OrderService {
                 }
                 // "Your Order Is Finished"
                 orderDao.setTotal(order.getOrderID());
+                return true;
             } else {
                 // "Create Order Failed"
+                return false;
             }
         }
     }
