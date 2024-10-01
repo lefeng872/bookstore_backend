@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
     public Order createOrder(Integer userID) {
         Order order = new Order();
         User user = userDao.findUserByUserID(userID);
@@ -66,6 +68,7 @@ public class OrderDaoImpl implements OrderDao {
         return order;
     }
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
     public void addOrderItem(Book book, Integer bookAmount, Order order) {
         book.setInventory(book.getInventory() - bookAmount);
         bookRepository.save(book);
@@ -83,6 +86,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
     public void setTotal(int orderID) {
         // todo
         Order order = orderRepository.findOrderByOrderID(orderID);

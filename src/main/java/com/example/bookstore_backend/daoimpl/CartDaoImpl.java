@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,9 @@ public class CartDaoImpl implements CartDao {
         cart.setUser(userRepository.findUserByUserID(userID));
         return cartRepository.save(cart);
     }
+
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
     public List<CartItem> getCartItems(Integer userID) {
         Cart cart = getCart(userID);
         return cartItemRepository.findCartItemByCart(cart);
@@ -70,6 +73,7 @@ public class CartDaoImpl implements CartDao {
         return Constants.SUCCESS;
     }
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor=Exception.class, isolation = Isolation.READ_COMMITTED)
     public Integer cancelCartItem(String isbn, Integer userID) {
         CartItem cartItem = findCartItemByISBNInUser(isbn, userID);
         if (cartItem == null) {
