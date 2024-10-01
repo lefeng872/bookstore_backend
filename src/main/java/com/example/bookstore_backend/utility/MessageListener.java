@@ -15,6 +15,8 @@ import java.util.Date;
 @EnableAutoConfiguration
 public class MessageListener {
     @Autowired
+    private WebSocketServer ws;
+    @Autowired
     OrderService orderService;
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -30,6 +32,11 @@ public class MessageListener {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String finishTime = simpleDateFormat.format(new Date(time));
             kafkaTemplate.send("finished", key, record.value() + "," + finishTime);
+        } else {
+            long time = System.currentTimeMillis();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String failTime = simpleDateFormat.format(new Date(time));
+            kafkaTemplate.send("failed", key, record.value() + "," + failTime);
         }
     }
 
@@ -38,5 +45,14 @@ public class MessageListener {
         String createTime = record.key();
         String[] value = record.value().split(",");
         System.out.println("finished listener get: (createTime: " + createTime + ", finishTime: " + value[1] + ", userID: " + value[0] + ")");
+        ws.sendMessageToUser(Integer.valueOf(value[0]), "Success! The order you made at " + createTime + " is finished at " + value[1]);
+    }
+
+    @KafkaListener(topics = "failed", groupId = "failed_group")
+    public void failedListener(ConsumerRecord<String, String> record) {
+        String createTime = record.key();
+        String[] value = record.value().split(",");
+        System.out.println("failed listener get: (createTime: " + createTime + ", finishTime: " + value[1] + ", userID: " + value[0] + ")");
+        ws.sendMessageToUser(Integer.valueOf(value[0]), "Failed! The order you made at " + createTime + " is failed at " + value[1]);
     }
 }
