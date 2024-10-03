@@ -10,6 +10,7 @@ public interface BookDao {
     List<Book> getBooksPage(String keyword, Pageable pageable);
     Book findBookByISBN(String isbn);
     Book findBookByName(String name);
+    Book findBookById(int id);
     List<Book> searchBook(String keyword);
 
     void updateBook(Integer id, String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);

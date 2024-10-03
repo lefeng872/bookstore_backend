@@ -6,6 +6,7 @@ import com.example.bookstore_backend.utility.Result;
 import java.util.List;
 
 public interface BookService {
+    Result<Book> findBookById(int id);
     public Result<Book> findBookByISBN(String isbn);
     public Result<List<Book>> getBooks();
     public Result<List<Book>> getBooksPage(String keyword, Integer pageIndex, Integer pageSize);

@@ -22,6 +22,22 @@ public class BookServiceImpl implements BookService {
     private BookDao bookDao;
     private Result<Book> bookResult = new Result<>();
     private Result<List<Book>> listResult = new Result<>();
+
+    @Override
+    public Result<Book> findBookById(int id) {
+        Book book = bookDao.findBookById(id);
+        if (book == null) {
+            bookResult.setCode(Constants.FAIL);
+            bookResult.setMsg("Not found this book");
+            bookResult.setDetail(null);
+        } else {
+            bookResult.setCode(Constants.SUCCESS);
+            bookResult.setMsg("Found this book");
+            bookResult.setDetail(book);
+        }
+        return bookResult;
+    }
+
     @Override
     public Result<Book> findBookByISBN(String isbn) {
         Book book = bookDao.findBookByISBN(isbn);

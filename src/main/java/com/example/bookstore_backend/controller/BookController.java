@@ -17,6 +17,7 @@ import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
@@ -40,13 +41,14 @@ public class BookController {
         return bookService.getBooksPage(keyword, pageIndex, pageSize);
     }
     @GetMapping("/getBook")
-    public Result<Book> getBook(String isbn){
-        return bookService.findBookByISBN(isbn);
+    public Result<Book> getBook(String id){
+        return bookService.findBookById(Integer.parseInt(id));
+//        return bookService.findBookByISBN(isbn);
     }
     @GetMapping("/searchBook")
     public Result<List<Book>> searchBook(String keyword) {
         System.out.println(keyword);
-        if (keyword == "") {
+        if (Objects.equals(keyword, "")) {
             return bookService.getBooks();
         } else {
             return bookService.searchBook(keyword);
