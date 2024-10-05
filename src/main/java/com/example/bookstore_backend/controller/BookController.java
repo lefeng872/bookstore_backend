@@ -7,6 +7,7 @@ import com.example.bookstore_backend.utility.Constants;
 import com.example.bookstore_backend.utility.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -23,6 +24,8 @@ import java.util.Objects;
 @RestController
 @EnableAutoConfiguration
 public class BookController {
+    @Autowired
+    private DiscoveryClient discoveryClient;
     @Autowired
     private BookService bookService;
     @GetMapping("/getBooks")
