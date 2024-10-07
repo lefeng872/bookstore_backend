@@ -13,19 +13,20 @@ import java.util.Map;
 public class CustomInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("Request URL: " + request.getRequestURL());
-        // todo 可以在这里进行身份验证、日志记录等操作
-        System.out.println("Request Session ID");
-        System.out.println(request.getRequestedSessionId());
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            System.out.println("Request intercepted");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return false; // 中断请求
-        } else {
-            System.out.println("Request pass interceptor");
-            return true;
-        }
+        return true;
+//        System.out.println("Request URL: " + request.getRequestURL());
+//        // todo 可以在这里进行身份验证、日志记录等操作
+//        System.out.println("Request Session ID");
+//        System.out.println(request.getRequestedSessionId());
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            System.out.println("Request intercepted");
+//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//            return false; // 中断请求
+//        } else {
+//            System.out.println("Request pass interceptor");
+//            return true;
+//        }
     }
 
     @Override

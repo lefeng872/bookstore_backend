@@ -38,6 +38,7 @@ public class UserController {
     private ClockService clockService;
     @PostMapping(value = "/login")
     public Result<User> login(@RequestBody Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("in login method");
         Result<User> result = userService.login(params.get("username"), params.get("password"));
         if (result != null && result.getCode() == Constants.SUCCESS) {
             result.setMsg("Login time is : " + clockService.start());
