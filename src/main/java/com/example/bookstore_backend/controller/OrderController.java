@@ -31,12 +31,11 @@ public class OrderController {
 
     /**
      * 获得userID用户的全部订单
-     * @param params
+     * @param
      * @return
      */
-    @PostMapping("/getOrders")
-    public Result<List<Order>> getOrders(@RequestBody Map<String, Integer> params) {
-        Integer userID = params.get("userID");
+    @GetMapping("/getOrders")
+    public Result<List<Order>> getOrders(@RequestParam int userID) {
         Result<List<Order>> a = orderService.getOrders(userID);
         return a;
 //        return orderService.getOrders(userID);
@@ -182,9 +181,9 @@ public class OrderController {
         orderService.makeOrder(userID);
     }
 
-    @PostMapping("/sendOrder")
-    public void sendOrder(@RequestBody Map<String, Integer> params) throws JsonProcessingException {
-        Integer userID = params.get("userID");
+    @GetMapping("/sendOrder")
+    public void sendOrder(@RequestParam int userID) throws JsonProcessingException {
+        System.out.println("sendOrder, userid=" + userID);
         long time = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String key = simpleDateFormat.format(new Date(time));

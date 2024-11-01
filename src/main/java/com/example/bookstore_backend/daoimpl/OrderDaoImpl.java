@@ -90,7 +90,8 @@ public class OrderDaoImpl implements OrderDao {
     public void setTotal(int orderID) {
         // todo
         Order order = orderRepository.findOrderByOrderID(orderID);
-        order.compute_total();
+//        order.compute_total();
+        order.compute_total_with_function();
         orderRepository.save(order);
     }
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -76,6 +78,29 @@ public class Order {
         }
         System.out.println("total of this order");
         System.out.println(total);
+        this.total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return total;
+    }
+
+    public BigDecimal compute_total_with_function() {
+        BigDecimal total = BigDecimal.valueOf(0.0);
+        for (OrderItem item: orderItems) {
+            String url = "http://localhost:8083/book";
+            Float[][] values = {{(float) item.getBookAmount(), item.getCurrentPrice().floatValue()}};
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Float[][]> request = new HttpEntity<>(values, headers);
+            final RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Float[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    request,
+                    Float[].class
+            );
+            System.out.println("Man! what can I say!" + response.getBody().length);
+            BigDecimal itemTotal = BigDecimal.valueOf(response.getBody()[0]);
+            total = total.add(itemTotal);
+        }
         this.total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
         return total;
     }

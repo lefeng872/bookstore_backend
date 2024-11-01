@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,17 @@ public class UserController {
     public Result<User> login(@RequestBody Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         System.out.println("in login method");
         Result<User> result = userService.login(params.get("username"), params.get("password"));
+        if (result != null && result.getCode() == Constants.SUCCESS) {
+            result.setMsg("Login time is : " + clockService.start());
+            SessionUtils.setSession(result.getDetail());
+            return result;
+        }
+        return result;
+    }
+    @RequestMapping(value = "/loginForDamnEureka")
+    public Result<User> login_naive(@RequestParam String username, @RequestParam String password) {
+        System.out.println("in login naive method");
+        Result<User> result = userService.login(username, password);
         if (result != null && result.getCode() == Constants.SUCCESS) {
             result.setMsg("Login time is : " + clockService.start());
             SessionUtils.setSession(result.getDetail());
