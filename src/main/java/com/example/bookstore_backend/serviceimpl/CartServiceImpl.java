@@ -62,8 +62,8 @@ public class CartServiceImpl implements CartService {
         return cartItemListResult;
     }
     @Override
-    public Result<List<CartItem>> addCartItem(String isbn, Integer userID, Integer bookAmount) {
-        cartItemListResult.setCode(cartDao.addCartItem(isbn, userID, bookAmount));
+    public Result<List<CartItem>> addCartItem(Integer id, Integer userID, Integer bookAmount) {
+        cartItemListResult.setCode(cartDao.addCartItem(id, userID, bookAmount));
         if (cartItemListResult.getCode() == Constants.SUCCESS) {
             cartItemListResult.setMsg("Success to Add to Cart");
         } else {

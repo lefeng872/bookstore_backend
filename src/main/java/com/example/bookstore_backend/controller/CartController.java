@@ -27,7 +27,7 @@ public class CartController {
     @PostMapping("/addCartItem")
     public Result<List<CartItem>> addCartItem(@RequestBody Map<String, String> params) {
         return cartService.addCartItem(
-                params.get("isbn"),
+                Integer.parseInt(params.get("id")),
                 Integer.parseInt(params.get("userID")),
                 Integer.parseInt(params.get("bookAmount"))
         );

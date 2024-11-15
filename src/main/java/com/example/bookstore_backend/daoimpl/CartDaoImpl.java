@@ -56,14 +56,14 @@ public class CartDaoImpl implements CartDao {
         return cartItemRepository.findCartItemByCart(cart);
     }
     @Override
-    public Integer addCartItem(String isbn, Integer userID, Integer bookAmount) {
+    public Integer addCartItem(Integer id, Integer userID, Integer bookAmount) {
         User user = userRepository.findUserByUserID(userID);
-        CartItem cartItem = findCartItemByISBNInUser(isbn, userID);
+        CartItem cartItem = findCartItemByIdInUser(id, userID);
         if (cartItem == null) {
             // new item
             cartItem = new CartItem();
             cartItem.setBookAmount(bookAmount);
-            cartItem.setIsbn(isbn);
+            cartItem.setIsbn(bookRepository.findBookById(id).getIsbn());
             cartItem.setCart(user.getCart());
         } else {
             // modify item
@@ -85,6 +85,17 @@ public class CartDaoImpl implements CartDao {
             return Constants.SUCCESS;
         }
     }
+    @Override
+    public CartItem findCartItemByIdInUser(Integer id, Integer userID) {
+        User user = userRepository.findUserByUserID(userID);
+        Cart cart = user.getCart();
+        Set<CartItem> items = cart.getCartItems();
+        for (CartItem item: items) {
+            if (item.getCartItemID() == id) return item;
+        }
+        return null;
+    }
+
     @Override
     public CartItem findCartItemByISBNInUser(String isbn, Integer userID) {
         User user = userRepository.findUserByUserID(userID);

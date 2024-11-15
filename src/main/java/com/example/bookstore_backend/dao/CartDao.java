@@ -10,7 +10,8 @@ public interface CartDao {
     public Cart getCart(Integer userID);
     public Cart createCart(Integer userID);
     public List<CartItem> getCartItems(Integer userID);
-    public Integer addCartItem(String isbn, Integer userID, Integer bookAmount);
+    public Integer addCartItem(Integer id, Integer userID, Integer bookAmount);
     public Integer cancelCartItem(String isbn, Integer userID);
+    public CartItem findCartItemByIdInUser(Integer id, Integer userID);
     public CartItem findCartItemByISBNInUser(String isbn, Integer userID);
 }
