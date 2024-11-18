@@ -10,3 +10,10 @@ $ redis-server
 Ctrl-C
 ```
 
+### database
+```
+mongo
+brew services start mongodb-community
+neo4j
+bin/neo4j start 
+```
