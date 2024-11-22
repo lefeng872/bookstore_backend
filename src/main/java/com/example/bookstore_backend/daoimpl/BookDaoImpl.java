@@ -3,6 +3,8 @@ package com.example.bookstore_backend.daoimpl;
 import com.alibaba.fastjson.JSON;
 import com.example.bookstore_backend.dao.BookDao;
 import com.example.bookstore_backend.entity.Book;
+import com.example.bookstore_backend.entity.BookImage;
+import com.example.bookstore_backend.repository.BookImageRepository;
 import com.example.bookstore_backend.repository.BookRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +20,50 @@ public class BookDaoImpl implements BookDao {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
+    BookImageRepository bookImageRepository;
+    @Autowired
     private RedisTemplate redisTemplate;
 
     @Override
     public List<Book> getBooks() {
-        return bookRepository.findAll();
+        List<Book> books = bookRepository.findAll();
+        return fillImage(books);
     }
 
     @Override
     public List<Book> getBooksPage(String keyword, Pageable pageable) {
+//
 //        return bookRepository.findAll(pageable).getContent();
-        return bookRepository.findByNameContaining(keyword, pageable).getContent();
+//
+        return fillImage(bookRepository.findByNameContaining(keyword, pageable).getContent());
+    }
+
+    private List<Book> fillImage(List<Book> books) {
+        List<BookImage> bookImages = bookImageRepository.findAll();
+        for (Book book : books) {
+            for (BookImage bookImage : bookImages) {
+                if (bookImage.getId() == book.getId()) {
+                    book.setImage(bookImage.getImage());
+                }
+            }
+        }
+        return books;
     }
 
     @Override
     public Book findBookByISBN(String isbn) {
-        return bookRepository.findBookByIsbn(isbn);
+        Book book = bookRepository.findBookByIsbn(isbn);
+        book.setImage(bookImageRepository.findBookImageById(book.getId()).getImage());
+        return book;
     }
 
     @Override
     public Book findBookByName(String name) {
-        return bookRepository.findBookByName(name);
+        Book book = bookRepository.findBookByName(name);
+        book.setImage(bookImageRepository.findBookImageById(book.getId()).getImage());
+        return book;
     }
 
-    // todo redis
     @Override
     public Book findBookById(int id) {
         Book book = null;
@@ -52,6 +74,7 @@ public class BookDaoImpl implements BookDao {
                 System.out.println("book" + id + " is in db");
                 // 如果 Redis 中没有该书，则从数据库中获取
                 book = bookRepository.findBookById(id);
+                book.setImage(bookImageRepository.findBookImageById(book.getId()).getImage());
                 // 将结果写入 Redis
                 redisTemplate.opsForValue().set("book" + id, JSON.toJSONString(book));
             } else {
@@ -63,6 +86,7 @@ public class BookDaoImpl implements BookDao {
             // 捕获 Redis 操作的异常，确保 Redis 出现问题时不影响数据库查询
             System.out.println("Redis 服务器连接失败或其他错误，直接从数据库中获取数据: " + e.getMessage());
             book = bookRepository.findBookById(id);  // 直接从数据库中查询
+            book.setImage(bookImageRepository.findBookImageById(book.getId()).getImage());
         }
         return book;
     }
@@ -70,20 +94,21 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> searchBook(String keyword) {
-        return bookRepository.searchBooksByKeyword(keyword);
+        return fillImage(bookRepository.searchBooksByKeyword(keyword));
     }
 
     // todo redis
     @Override
     public void updateBook(Integer id, String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description) {
         Book book = bookRepository.findBookById(id);
-        if (book == null) {
+        BookImage bookImage = bookImageRepository.findBookImageById(id);
+        if (book == null || bookImage == null) {
             System.out.println("update book don't exist!");
             return;
         } else {
             book.setName(name);
             book.setAuthor(author);
-            book.setImage(image);
+//            book.setImage(image);
             book.setIsbn(isbn);
             book.setInventory(inventory);
             book.setType(type);
@@ -100,7 +125,10 @@ public class BookDaoImpl implements BookDao {
             }
             System.out.println("update book" + id + " in db");
             bookRepository.save(book);
-            System.out.println("update finished~");
+            System.out.println("mysql update finished~");
+            bookImage.setImage(image);
+            bookImageRepository.save(bookImage);
+            System.out.println("mongodb update finished~");
         }
     }
 
@@ -115,6 +143,7 @@ public class BookDaoImpl implements BookDao {
         }
         System.out.println("delete book" + id + " in db");
         bookRepository.deleteBookById(id);
+        bookImageRepository.deleteBookImageById(id);
     }
 
     // todo redis
@@ -123,7 +152,7 @@ public class BookDaoImpl implements BookDao {
         Book book = new Book();
         book.setName(name);
         book.setAuthor(author);
-        book.setImage(image);
+//        book.setImage(image);
         book.setIsbn(isbn);
         book.setInventory(inventory);
         book.setType(type);
@@ -131,6 +160,8 @@ public class BookDaoImpl implements BookDao {
         book.setDescription(description);
         System.out.println("add book in db");
         book = bookRepository.save(book);
+        BookImage bookImage = new BookImage(book.getId(), image);
+        bookImageRepository.save(bookImage);
         try {
             redisTemplate.opsForValue().set("book" + book.getId(), JSON.toJSONString(book));
             System.out.println("add book" + book.getId() + " in redis");
