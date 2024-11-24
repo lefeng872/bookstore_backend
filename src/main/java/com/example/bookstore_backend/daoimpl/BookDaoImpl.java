@@ -7,12 +7,14 @@ import com.example.bookstore_backend.entity.BookImage;
 import com.example.bookstore_backend.repository.BookImageRepository;
 import com.example.bookstore_backend.repository.BookRepository;
 
+import com.example.bookstore_backend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -21,6 +23,8 @@ public class BookDaoImpl implements BookDao {
     private BookRepository bookRepository;
     @Autowired
     BookImageRepository bookImageRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -169,5 +173,16 @@ public class BookDaoImpl implements BookDao {
             System.out.println("Redis 服务器连接失败或其他错误" + e.getMessage());
         }
         return book;
+    }
+
+    @Override
+    public List<Book> searchType(String type) {
+        List<String> types = categoryRepository.findRelatedCategories(type);
+        types.add(type);
+        List<Book> books = new ArrayList<>();
+        for (String category : types) {
+            books.addAll(bookRepository.findBookByType(category));
+        }
+        return books;
     }
 }

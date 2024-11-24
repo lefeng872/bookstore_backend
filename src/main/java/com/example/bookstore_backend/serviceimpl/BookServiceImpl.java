@@ -146,4 +146,19 @@ public class BookServiceImpl implements BookService {
         listResult.setDetail(books);
         return listResult;
     }
+
+    @Override
+    public Result<List<Book>> searchType(String type) {
+        List<Book> books = bookDao.searchType(type);
+        if (books == null) {
+            listResult.setCode(Constants.FAIL);
+            listResult.setMsg("dao error");
+            listResult.setDetail(null);
+        } else {
+            listResult.setCode(Constants.SUCCESS);
+            listResult.setMsg("Success to fetch");
+            listResult.setDetail(books);
+        }
+        return listResult;
+    }
 }

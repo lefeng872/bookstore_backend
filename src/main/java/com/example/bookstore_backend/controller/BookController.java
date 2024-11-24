@@ -54,6 +54,7 @@ public class BookController {
             return bookService.searchBook(keyword);
         }
     }
+
     @PostMapping("/updateBook")
     public Result<List<Book>> updateBook(@RequestBody Map<String, String> params) {
         System.out.println("in update book");
@@ -89,5 +90,10 @@ public class BookController {
         String description = params.get("description");
         System.out.println("all params get");
         return bookService.addBook(name, author, image, isbn, inventory, type, price, description);
+    }
+
+    @RequestMapping("/searchType")
+    public Result<List<Book>> searchType(String type) {
+        return bookService.searchType(type);
     }
 }

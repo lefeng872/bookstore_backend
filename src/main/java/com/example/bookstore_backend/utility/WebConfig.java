@@ -13,9 +13,9 @@ public class WebConfig implements WebMvcConfigurer {
     private CustomInterceptor customInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(customInterceptor)
-                .addPathPatterns("/**") // 拦截所有请求
-                .excludePathPatterns("/login", "/register"); // 排除特定请求
+//        registry.addInterceptor(customInterceptor)
+//                .addPathPatterns("/**") // 拦截所有请求
+//                .excludePathPatterns("/login", "/register"); // 排除特定请求
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {

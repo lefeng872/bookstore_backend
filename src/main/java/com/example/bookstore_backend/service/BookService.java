@@ -15,4 +15,5 @@ public interface BookService {
     public Result<List<Book>> updateBook(Integer id, String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);
     Result<List<Book>> deleteBook(Integer id);
     Result<List<Book>> addBook(String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);
+    Result<List<Book>> searchType(String type);
 }

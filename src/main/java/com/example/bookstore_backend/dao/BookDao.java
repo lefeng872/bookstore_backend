@@ -18,4 +18,6 @@ public interface BookDao {
     void deleteBook(Integer id);
 
     Book addBook(String name, String author, String image, String isbn, Integer inventory, String type, Float price, String description);
+
+    List<Book> searchType(String type);
 }
