@@ -19,8 +19,8 @@ This is the course project for SE3353 and SE2321 at SJTU.
 
 ## Repository
 
-The source code for this project can be found at:  
-[https://github.com/lfwang-sjtu/bookstore_backend](https://github.com/lfwang-sjtu/bookstore_backend)
+The source code for frontend can be found at:  
+[https://github.com/lfwang-sjtu/bookstore_frontend](https://github.com/lfwang-sjtu/bookstore_frontend)
 
 ## Usage
 
