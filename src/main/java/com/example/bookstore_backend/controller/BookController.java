@@ -88,4 +88,10 @@ public class BookController {
         System.out.println("all params get");
         return bookService.addBook(name, author, image, isbn, inventory, type, price, description);
     }
+
+    // graphql
+    @QueryMapping
+    public Book bookByName(@Argument String name) {
+        return bookService.findBookByName(name);
+    }
 }

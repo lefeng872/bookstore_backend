@@ -68,18 +68,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Result<Book> findBookByName(String name) {
-        Book book = bookDao.findBookByName(name);
-        if (book == null) {
-            bookResult.setCode(Constants.FAIL);
-            bookResult.setMsg("Not found this book");
-            bookResult.setDetail(null);
-        } else {
-            bookResult.setCode(Constants.SUCCESS);
-            bookResult.setMsg("Found this book");
-            bookResult.setDetail(book);
-        }
-        return bookResult;
+    public Book findBookByName(String name) {
+        return bookDao.findBookByName(name);
     }
 
     @Override

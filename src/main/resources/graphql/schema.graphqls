@@ -1,0 +1,32 @@
+# query.graphql
+
+# 定义根查询类型（Query）
+type Query {
+    bookByName(name: String!): Book   # 根据书籍名称查询书籍
+}
+
+# 定义书籍类型（Book）
+type Book {
+    id: ID         # 书籍的唯一标识符
+    isbn: String   # ISBN号
+    name: String   # 书名（题目）
+    author: String # 作者
+    price: Float   # 价格
+    description: String # 描述
+    inventory: Int  # 库存数量
+    image: String   # 图片链接
+}
+
+# how to make query
+#{
+#    bookByName(name: "The Great Gatsby") {
+#        id
+#        isbn
+#        name
+#        author
+#        price
+#        description
+#        inventory
+#        image
+#    }
+#}
