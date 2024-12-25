@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    networks:
+      - my-network
+    environment:
+      MYSQL_ROOT_PASSWORD: headmaster
+    volumes:
+      - ./mysql/log:/var/log/mysql
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - "3307:3306"
+
+  spring-boot-app:
+    image: bookstore-backend
+    container_name: spring-boot-app
+    restart: always
+    networks:
+      - my-network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+networks:
+  my-network:
+    external: true

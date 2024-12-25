@@ -36,6 +36,11 @@ public class UserController {
     private UserService userService;
     @Autowired
     private ClockService clockService;
+    @GetMapping(value = "test")
+    public String test() {
+        return "test alright";
+    }
+
     @PostMapping(value = "/login")
     public Result<User> login(@RequestBody Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         Result<User> result = userService.login(params.get("username"), params.get("password"));
